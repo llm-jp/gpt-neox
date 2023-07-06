@@ -52,9 +52,9 @@ def build_tokenizer(args):
         tokenizer = HFGPT2Tokenizer(args.vocab_file)
     elif args.tokenizer_type.lower() == "CharLevelTokenizer".lower():
         tokenizer = CharLevelTokenizer(vocab_size=512)
-    elif args.tokenizer_type.lower() == "TiktokenTokenizer".lower():
+    elif args.tokenizer_type.lower() == "JapaneseSentencePiece".lower():
         assert args.vocab_file is not None
-        tokenizer = TiktokenTokenizer(args.vocab_file)
+        tokenizer = _JapaneseSentencePiece(args.vocab_file)
     else:
         raise NotImplementedError(
             "{} tokenizer is not " "implemented.".format(args.tokenizer_type)
@@ -399,3 +399,80 @@ class TiktokenTokenizer(AbstractTokenizer):
     @property
     def pad(self):
         raise NotImplementedError
+
+# /home/jun/work_src/Megatron-DeepSpeed-ABCI/megatron/tokenizer/tokenizer.py
+class _JapaneseSentencePiece(AbstractTokenizer):
+    def __init__(self, vocab_file):
+        name = 'Japanese Sentencepiece'
+        super().__init__(name)
+        self.tokenizer = spm.SentencePieceProcessor(model_file=vocab_file)
+        # TODO: make sure eod and pad ids are included in the pre-trained tokenizer
+        self.eod_id = self.tokenizer.piece_to_id("<|endoftext|>")
+        self.pad_id = self.tokenizer.piece_to_id("<|padding|>")
+        self.eol_symbol = "<|endofline|>"
+
+    @property
+    def vocab_size(self):
+        #return self.tokenizer.vocab_size # this does not reflect "\n"
+        return self.tokenizer.vocab_size()
+
+    @property
+    def vocab(self):
+        raise NotImplementedError
+
+    @property
+    def inv_vocab(self):
+        raise NotImplementedError
+
+    def tokenize(self, text: str):
+        # TODO: make sure this is user defined
+        text = text.replace("\n", self.eol_symbol)
+        text = text.replace("\r\n", self.eol_symbol)
+        return self.tokenizer.encode(text)
+
+    def detokenize(self, token_ids):
+        text = self.tokenizer.decode(token_ids)
+        text = text.replace(self.eol_symbol, "\n")
+        return text
+
+    @property
+    def eod(self):
+        return self.eod_id
+
+# https://github.com/kojimano/Megatron-DeepSpeed-ABCI/blob/547548f0fadbbe8fbfca115d22b91745ae0d8ef5/megatron/tokenizer/tokenizer.py
+"""
+class _JapaneseSentencePiece(AbstractTokenizer): 
+     def __init__(self, vocab_file):
+        name = 'Japanese Sentencepiece'
+        super().__init__(name)
+        tokenizer = spm.SentencePieceProcessor(model_file=vocab_file)
+        # TODO: make sure eod and pad ids are included in the pre-trained tokenizer
+        self.eod_id = self.tokenizer.eos_id()
+        self.pad_id = self.tokenizer.pad_id()
+
+    @property
+    def vocab_size(self):
+        #return self.tokenizer.vocab_size # this does not reflect "\n"
+        return self.tokenizer.vocab_size() 
+
+    @property
+    def vocab(self):
+        raise NotImplementedError
+
+    @property
+    def inv_vocab(self):
+        raise NotImplementedError
+
+    def tokenize(self, text: str):
+        # TODO: make sure this is user defined 
+        text = text.replace("\n", "<<<n>>>")
+        text = text.replace("\r\n", "<<<n>>>")
+        return self.tokenizer.encode(text)
+
+    def detokenize(self, token_ids):
+        return self.tokenizer.decode(token_ids)
+
+    @property
+    def eod(self):
+        return self.eod_id
+"""

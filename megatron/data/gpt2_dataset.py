@@ -174,6 +174,7 @@ def _build_index_mappings(
 
             assert doc_idx.dtype == np.int32
             assert sizes.dtype == np.int32
+            import ipdb; ipdb.set_trace()
 
             num_samples = (num_epochs * tokens_per_epoch - 1) / seq_length
             if 2 * (num_samples + 1) < np.iinfo(np.int32).max:
