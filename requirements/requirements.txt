@@ -1,3 +1,6 @@
+--find-links https://download.pytorch.org/whl/torch_stable.html
+torch==2.0.1+cu118
+
 best_download
 git+https://github.com/EleutherAI/DeeperSpeed.git#egg=deepspeed
 ftfy>=6.0.1
