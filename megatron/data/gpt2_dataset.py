@@ -130,6 +130,10 @@ def _build_index_mappings(
     # Number of tokens in each epoch and number of required epochs.
     tokens_per_epoch = _num_tokens(documents, sizes)
     num_epochs = _num_epochs(tokens_per_epoch, seq_length, num_samples)
+
+    print_rank_0(" > tokens_per_epoch {}".format(tokens_per_epoch))
+    print_rank_0(" > num_samples {}".format(num_samples))
+
     # rng state
     np_rng = np.random.RandomState(seed=seed)
 
@@ -174,7 +178,6 @@ def _build_index_mappings(
 
             assert doc_idx.dtype == np.int32
             assert sizes.dtype == np.int32
-            import ipdb; ipdb.set_trace()
 
             num_samples = (num_epochs * tokens_per_epoch - 1) / seq_length
             if 2 * (num_samples + 1) < np.iinfo(np.int32).max:
