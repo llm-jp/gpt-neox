@@ -4,15 +4,15 @@
   "vocab_file": "data/gpt2-vocab.json",
   "merge_file": "data/gpt2-merges.txt",
 
-  "save": "checkpoints/default-launcher/gpt2-2.7b-dp16",
-  "load": "checkpoints/default-launcher/gpt2-2.7b-dp16",
+  "save": "checkpoints/gpt-2.7b-dp16-tp1-pp1",
+  "load": "checkpoints/gpt-2.7b-dp16-tp1-pp1",
   "checkpoint_validation_with_forward_pass": False,
 
   "tensorboard_dir": "tensorboard",
   "log_dir": "logs",
   "use_wandb": True,
   "wandb_host": "https://api.wandb.ai",
-  "wandb_project": "gpt-neox-hpc",
-  "wandb_team": "toyolabo",
+  "wandb_project": "gpt-neox-abci",
+  "wandb_team": "brain-team",
   "wandb_group": "gpt-neox-2.7b-dp16",
 }
