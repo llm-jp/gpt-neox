@@ -1,0 +1,18 @@
+# Suggested data paths when using GPT-NeoX locally
+{
+  "data_path": "data/enwik8/enwik8_text_document",
+  "vocab_file": "data/gpt2-vocab.json",
+  "merge_file": "data/gpt2-merges.txt",
+
+  "save": "checkpoints/default-launcher/gpt-2.7b-dp8-tp1-pp1",
+  "load": "checkpoints/default-launcher/gpt2-2.7b-dp8-tp1-pp1",
+  "checkpoint_validation_with_forward_pass": False,
+
+  "tensorboard_dir": "tensorboard",
+  "log_dir": "logs",
+  "use_wandb": True,
+  "wandb_host": "https://api.wandb.ai",
+  "wandb_project": "gpt-neox-abci",
+  "wandb_team": "brain-team",
+  "wandb_group": "gpt-2.7b-dp8-tp1-pp1",
+}
