@@ -3,7 +3,7 @@
    # parallelism settings ( you will want to change these based on your cluster setup, ideally scheduling pipeline stages
    # across the node boundaries )
    "pipe_parallel_size": 1,
-   "model_parallel_size": 4,
+   "model_parallel_size": 8,
 
    # model settings
    "num_layers": 40,
@@ -16,6 +16,9 @@
    "no_weight_tying": true,
    "gpt_j_residual": false,
    "output_layer_parallelism": "column",
+
+   # flash attention
+   "attention_config": [[["flash"], 40]],
 
    # these should provide some speedup but takes a while to build, set to true if desired
    "scaled_upper_triang_masked_softmax_fusion": false,
@@ -49,7 +52,10 @@
    "min_lr": 0.00001,
 
    # batch / data settings
-   "train_micro_batch_size_per_gpu": 4,
+   "train_micro_batch_size_per_gpu": 8,
+   "gradient_accumulation_steps": 192,
+   "train_batch_size": 1536,  # just pass for batch size check...
+   #"train_batch_size": 1536,  # just pass for batch size check...
    "data_impl": "mmap",
 
    # activation checkpointing
@@ -85,7 +91,7 @@
    "eval_iters": 10,
 
    # logging
-   "log_interval": 100,
+   "log_interval": 1,
    "steps_per_print": 10,
    "keep_last_n_checkpoints": 4,
    "wall_clock_breakdown": true,
