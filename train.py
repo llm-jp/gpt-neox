@@ -18,6 +18,8 @@
 """Train"""
 from megatron.neox_arguments import NeoXArgs
 from megatron.training import pretrain
+import os
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:100"
 
 if __name__ == "__main__":
     neox_args = NeoXArgs.consume_neox_args()

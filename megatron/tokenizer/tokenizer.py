@@ -426,13 +426,13 @@ class _JapaneseSentencePiece(AbstractTokenizer):
 
     def tokenize(self, text: str):
         # TODO: make sure this is user defined
-        text = text.replace("\n", self.eol_symbol)
-        text = text.replace("\r\n", self.eol_symbol)
+        # text = text.replace("\n", self.eol_symbol)
+        # text = text.replace("\r\n", self.eol_symbol)
         return self.tokenizer.encode(text)
 
     def detokenize(self, token_ids):
         text = self.tokenizer.decode(token_ids)
-        text = text.replace(self.eol_symbol, "\n")
+        # text = text.replace(self.eol_symbol, "\n")
         return text
 
     @property

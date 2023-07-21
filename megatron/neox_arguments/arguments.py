@@ -805,7 +805,7 @@ class NeoXArgs(*BASE_CLASSES):
         assert train_batch == micro_batch * grad_acc * dp_world_size, (
             f"Check batch related parameters. train_batch_size is not equal"
             " to micro_batch_per_gpu * gradient_acc_step * world_size \n"
-            f"{train_batch} != {micro_batch} * {grad_acc} * {dp_world_size}"
+            f"{train_batch} != {micro_batch} * {grad_acc} * {dp_world_size} = {micro_batch * grad_acc * dp_world_size}"
         )
 
     def calculate_derived(self):

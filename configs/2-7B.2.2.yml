@@ -55,7 +55,7 @@
 
    # batch / data settings
    "train_micro_batch_size_per_gpu": 8,
-   "train_batch_size": 1536,  # just pass for batch size check...
+   #"train_batch_size": 1536,  # just pass for batch size check...
    "gradient_accumulation_steps": 48,
    "data_impl": "mmap",
 
@@ -92,7 +92,7 @@
    "eval_iters": 10,
 
    # logging
-   "log_interval": 100,
+   "log_interval": 1,
    "steps_per_print": 10,
    "keep_last_n_checkpoints": 4,
    "wall_clock_breakdown": true,
