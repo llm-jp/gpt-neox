@@ -95,6 +95,7 @@ def get_args():
             "CharLevelTokenizer",
             "TiktokenTokenizer",
             "SPMTokenizer",
+            "SentencePieceTokenizer",
             "JapaneseSentencePiece",
         ],
         help="What type of tokenizer to use.",

@@ -3,12 +3,15 @@
    # parallelism settings ( you will want to change these based on your cluster setup, ideally scheduling pipeline stages
    # across the node boundaries )
    "pipe_parallel_size": 1,
-   "model_parallel_size": 4,
+   "model_parallel_size": 1,
+
+   # "launcher": "openmpi",
+   # "launcher": "mvapich",
 
    # model settings
-   "num_layers": 40,
-   "hidden_size": 5120,
-   "num_attention_heads": 40,
+   "num_layers": 32,
+   "hidden_size": 2560,
+   "num_attention_heads": 32,
    "seq_length": 2048,
    "max_position_embeddings": 2048,
    "norm": "layernorm",
@@ -16,6 +19,9 @@
    "no_weight_tying": true,
    "gpt_j_residual": false,
    "output_layer_parallelism": "column",
+
+   # flash attention
+   "attention_config": [[["flash"], 32]],
 
    # these should provide some speedup but takes a while to build, set to true if desired
    "scaled_upper_triang_masked_softmax_fusion": false,
@@ -25,16 +31,16 @@
    "init_method": "small_init",
    "output_layer_init_method": "wang_init",
 
-
    # optimizer settings
    "optimizer": {
      "type": "Adam",
      "params": {
-       "lr": 0.0001,
+       "lr": 0.00016,
        "betas": [0.9, 0.95],
        "eps": 1.0e-8,
      }
    },
+   "min_lr": 0.000016,
 
    # for all zero_optimization options, see https://www.deepspeed.ai/docs/config-json/#zero-optimizations-for-fp16-training
    "zero_optimization": {
@@ -46,10 +52,11 @@
     "reduce_bucket_size": 500000000,
     "contiguous_gradients": True,
   },
-   "min_lr": 0.00001,
 
    # batch / data settings
-   "train_micro_batch_size_per_gpu": 4,
+   "train_micro_batch_size_per_gpu": 8,
+   #"train_batch_size": 1536,  # just pass for batch size check...
+   "gradient_accumulation_steps": 48,
    "data_impl": "mmap",
 
    # activation checkpointing
@@ -75,17 +82,17 @@
    },
 
    # misc. training settings
-   "train_iters": 320000,
-   "lr_decay_iters": 320000,
+   "train_iters": 3100,
+   "lr_decay_iters": 3100,
    "distributed_backend": "nccl",
    "lr_decay_style": "cosine",
    "warmup": 0.01,
-   "checkpoint_factor": 10000,
+   "checkpoint_factor": 100,
    "eval_interval": 1000,
    "eval_iters": 10,
 
    # logging
-   "log_interval": 100,
+   "log_interval": 1,
    "steps_per_print": 10,
    "keep_last_n_checkpoints": 4,
    "wall_clock_breakdown": true,

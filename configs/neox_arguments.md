@@ -1014,11 +1014,14 @@ Tokenizer Arguments
 
 
 
-- **tokenizer_type**: typing.Literal['GPT2BPETokenizer', 'HFTokenizer', 'HFGPT2Tokenizer', 'SPMTokenizer', 'CharLevelTokenizer', 'TiktokenTokenizer']
+- **tokenizer_type**: typing.Literal['GPT2BPETokenizer', 'HFTokenizer', 'HFGPT2Tokenizer', 'SPMTokenizer', 'CharLevelTokenizer', 'TiktokenTokenizer', 'SentencePieceTokenizer', 'JapaneseSentencePiece']
 
     Default = GPT2BPETokenizer
 
-    Type of tokenizer to use - should be one of ["GPT2BPETokenizer", "HFTokenizer", "HFGPT2Tokenizer", "SPMTokenizer", "CharLevelTokenizer", "TiktokenTokenizer"]
+    Type of tokenizer to use - should be one of ["GPT2BPETokenizer", "HFTokenizer", "HFGPT2Tokenizer", "SPMTokenizer", "CharLevelTokenizer", "TiktokenTokenizer", 'SentencePieceTokenizer', 'JapaneseSentencePiece']
+
+    'SentencePieceTokenizer' is from the Megatron SentencePiece implementation.
+    'JapaneseSentencePiece' is for compatibility, will be removed. SPMTokenizer is recommended for vanilla SentencePiece.
 
 
 
