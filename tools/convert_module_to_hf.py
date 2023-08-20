@@ -114,6 +114,7 @@ def create_config(neox_config):
         )
 
     # set all config values.
+    import ipdb; ipdb.set_trace()
     hf_config = GPTNeoXConfig(
         vocab_size=args.padded_vocab_size,
         hidden_size=get_key(neox_config, "hidden-size"),
@@ -286,7 +287,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--config_file",
-        type=str,
+        nargs='+',
         help="Path to config file for the input NeoX checkpoint.",
     )
     parser.add_argument(
@@ -301,8 +302,11 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    with open(args.config_file) as f:
-        loaded_config = yaml.full_load(f)
+    loaded_config = {}
+    for fin in args.config_file:
+        print(f'Loading a config file of {fin}')
+        with open(fin) as f:
+            loaded_config.update(yaml.full_load(f))
 
     hf_model = convert(args.input_dir, loaded_config, args.output_dir)
 

@@ -71,7 +71,8 @@ def _vocab_size_with_padding(orig_vocab_size, args):
     still having GPU friendly size."""
 
     after = orig_vocab_size
-    multiple = args.make_vocab_size_divisible_by * args.model_parallel_size
+    model_parallel_size = 1 if args.model_parallel_size is None else args.model_parallel_size
+    multiple = args.make_vocab_size_divisible_by * model_parallel_size
     while (after % multiple) != 0:
         after += 1
     if args.rank == 0:
@@ -409,7 +410,7 @@ class _JapaneseSentencePiece(AbstractTokenizer):
         # TODO: make sure eod and pad ids are included in the pre-trained tokenizer
         self.eod_id = self.tokenizer.piece_to_id("<|endoftext|>")
         self.pad_id = self.tokenizer.piece_to_id("<|padding|>")
-        self.eol_symbol = "<|endofline|>"
+        #self.eol_symbol = "<|endofline|>"
 
     @property
     def vocab_size(self):
@@ -426,13 +427,13 @@ class _JapaneseSentencePiece(AbstractTokenizer):
 
     def tokenize(self, text: str):
         # TODO: make sure this is user defined
-        text = text.replace("\n", self.eol_symbol)
-        text = text.replace("\r\n", self.eol_symbol)
+        #text = text.replace("\n", self.eol_symbol)
+        #text = text.replace("\r\n", self.eol_symbol)
         return self.tokenizer.encode(text)
 
     def detokenize(self, token_ids):
         text = self.tokenizer.decode(token_ids)
-        text = text.replace(self.eol_symbol, "\n")
+        #text = text.replace(self.eol_symbol, "\n")
         return text
 
     @property
