@@ -31,17 +31,18 @@
   # "merge-file": "data/gpt2-merges.txt",
   # "tokenizer-type": "HFTokenizer",
   # "vocab-file": "20B_checkpoints/20B_tokenizer.json",
-  "tokenizer-type": "JapaneseSentencePiece",
+  "tokenizer-type": "SentencePieceTokenizer",
   "vocab-file": "/data/tokenizer/v1_20230628/cc100_ja30K_en20K.symbolRemoved.vocab.reestimated.model",
 
-  "save": "/model/kurita/gpt-neox/checkpoints.trial_small_v20230701.13B",
-  "load": "/model/kurita/gpt-neox/checkpoints.trial_small_v20230701.13B",
+  "save": "/model/kurita/gpt-neox/checkpoints.trial_small_v20230701.13B.debug",
+  "load": "/model/kurita/gpt-neox/checkpoints.trial_small_v20230701.13B.debug",
   "checkpoint_validation_with_forward_pass": False,
 
   "tensorboard-dir": "tensorboard",
   "log-dir": "logs",
-  "use_wandb": True,
+  "use_wandb": False,
   "wandb_host": "https://api.wandb.ai",
   "wandb_team":"llm-jp",
-  "wandb_project": "neox"
+  "wandb_project": "neox",
+  "wandb_group": "node8 x gpu8 pp4 fattn2 gbs1548",
 }
