@@ -227,6 +227,7 @@ def convert(input_checkpoint_path, loaded_config, output_checkpoint_path):
         state_dict["attention.rotary_emb.inv_freq"] = loaded_tp_ranks[0][
             "attention.rotary_emb.inv_freq"
         ]
+        import ipdb; ipdb.set_trace()
         state_dict["attention.bias"] = hf_layer.state_dict()["attention.bias"]
         state_dict["attention.masked_bias"] = hf_layer.state_dict()[
             "attention.masked_bias"
@@ -286,7 +287,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--config_file",
-        type=str,
+        nargs='+',
         help="Path to config file for the input NeoX checkpoint.",
     )
     parser.add_argument(
@@ -301,8 +302,11 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    with open(args.config_file) as f:
-        loaded_config = yaml.full_load(f)
+    loaded_config = {}
+    for fin in args.config_file:
+        print(f'Loading a config file of {fin}')
+        with open(fin) as f:
+            loaded_config.update(yaml.full_load(f))
 
     hf_model = convert(args.input_dir, loaded_config, args.output_dir)
 
