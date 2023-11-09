@@ -33,6 +33,9 @@ def main():
     if wandb_token is not None:
         deepspeed.launcher.runner.EXPORT_ENVS.append("WANDB_API_KEY")
         os.environ["WANDB_API_KEY"] = wandb_token
+        # os.environ["PATH"] += ":/model/kurita/gpt-neox/venv_neox38/bin/"
+        # os.environ["CUDA_VISIBLE_DEVICES"] = "7"
+        # os.environ["include"] = "localhost:7"
         #os.environ["PATH"] += ":/model/kurita/gpt-neox/venv_neox38/bin/"
 
     deepspeed.launcher.runner.main(deepspeed_main_args)

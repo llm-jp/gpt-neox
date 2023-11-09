@@ -45,6 +45,7 @@ def load_partitions(
 ) -> List[torch.Tensor]:
     """Returns a list containing all weights in a given layer from a model (across MP partitions)"""
 
+    # print("mp_partitions",mp_partitions)
     loaded_tp_ranks = [
         torch.load(
             os.path.join(
@@ -114,6 +115,7 @@ def create_config(neox_config):
         )
 
     # set all config values.
+    #import ipdb; ipdb.set_trace()
     hf_config = GPTNeoXConfig(
         vocab_size=args.padded_vocab_size,
         hidden_size=get_key(neox_config, "hidden-size"),
@@ -129,7 +131,7 @@ def create_config(neox_config):
         use_cache=True,
         bos_token_id=tokenizer.eod,
         eos_token_id=tokenizer.eod,
-        tie_word_embeddings=(not get_key(neox_config, "no-weight-tying", False)),
+        tie_word_embeddings=(not get_key(neox_config, "no_weight_tying", False)),
         use_parallel_residual=get_key(neox_config, "gpt-j-residual", False),
     )
     return hf_config
@@ -227,7 +229,7 @@ def convert(input_checkpoint_path, loaded_config, output_checkpoint_path):
         state_dict["attention.rotary_emb.inv_freq"] = loaded_tp_ranks[0][
             "attention.rotary_emb.inv_freq"
         ]
-        import ipdb; ipdb.set_trace()
+        # import ipdb; ipdb.set_trace()
         state_dict["attention.bias"] = hf_layer.state_dict()["attention.bias"]
         state_dict["attention.masked_bias"] = hf_layer.state_dict()[
             "attention.masked_bias"
@@ -252,17 +254,29 @@ def convert(input_checkpoint_path, loaded_config, output_checkpoint_path):
     del loaded_tp_ranks
 
     # Load output embedding
-    loaded_tp_ranks = load_partitions(
-        input_checkpoint_path, mp_partitions, get_key(loaded_config, "num-layers") + 4
-    )
+    if loaded_config["no_weight_tying"]:
+        loaded_tp_ranks = load_partitions(
+            input_checkpoint_path, mp_partitions, get_key(loaded_config, "num-layers") + 4
+        )
 
-    hf_model.embed_out.load_state_dict(
-        {
-            "weight": torch.cat(
-                [t["final_linear.weight"] for t in loaded_tp_ranks], dim=0
-            ),
-        }
-    )
+        hf_model.embed_out.load_state_dict(
+            {
+                "weight": torch.cat(
+                    [t["final_linear.weight"] for t in loaded_tp_ranks], dim=0
+                ),
+            }
+        )
+    else:
+        ### Embedding layer ###
+        loaded_tp_ranks = load_partitions(input_checkpoint_path, mp_partitions, 0)
+
+        hf_model.gpt_neox.embed_in.load_state_dict(
+            {
+                "weight": torch.cat(
+                    [t["word_embeddings.weight"] for t in loaded_tp_ranks], dim=0
+                )
+            }
+        )
 
     del loaded_tp_ranks
 
@@ -307,6 +321,9 @@ if __name__ == "__main__":
         print(f'Loading a config file of {fin}')
         with open(fin) as f:
             loaded_config.update(yaml.full_load(f))
+    
+    # import ipdb; ipdb.set_trace()
+    print("loaded_config['no_weight_tying']",loaded_config['no_weight_tying'])
 
     hf_model = convert(args.input_dir, loaded_config, args.output_dir)
 
